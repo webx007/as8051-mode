@@ -22,7 +22,7 @@ If different, adjust the instructions below accordingly.
 - add below lines
 #+begin_src elisp
 ;; Add as8051 folder to Emacs load path
-(Add-to-list 'load-path (concat user-emacs-directory "as8051-mode/" ))
+(add-to-list 'load-path (concat user-emacs-directory "as8051-mode/" ))
 ;; load module
 (require 'as8051-mode)
 ;; associate as8051-mode with .asm files
