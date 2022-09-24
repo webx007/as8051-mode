@@ -1,4 +1,3 @@
-#+TITLE: Emacs ASXXXX 8051 Assembler Mayor Mode  
 #+OPTIONS: ^:{}
 * Emacs ASXXXX 8051 Assembler Major Mode
 Emacs major mode for editing [[https://shop-pdp.net/ashtml/][ASXXXX]] 8051 (Intel MCS-51) assembler code.
