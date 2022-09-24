@@ -1,0 +1,35 @@
+#+TITLE: Emacs ASXXXX 8051 Assembler Mayor Mode  
+#+OPTIONS: ^:{}
+* Emacs ASXXXX 8051 Assembler Major Mode
+Emacs major mode for editing [[https://shop-pdp.net/ashtml/][ASXXXX]] 8051 (Intel MCS-51) assembler code.
+Code adapted from [[https://github.com/skeeto/nasm-mode][nasm-mode]] by Christopher Wellons and =inherits= the following features:
+- syntax highlighting
+- automatic indentation
+- imenu integration
+- support for 8051 instructions and registers
+- support for ASXXXX syntax
+[[file:img/as8051-mode_example_01.png]]
+** Installation
+Instructions for standard Emacs setup assuming Emacs config folder is =~/.emacs.d= and config file =~/.emacs.d/init.el=.
+
+If different, adjust the instructions below accordingly.
+*** Download
+- download [[file:as8051-mode.el][as8051-mode.el]]
+*** Copy to Emacs init folder
+- create folder, ~as8051-mode~ in Emacs init folder
+- copy ~as8051-mode.el~ to =~/.emacs.d/as8051-mode=
+*** Update Emacs init file
+- edit =~/emacs.d/init.el=
+- add below lines
+#+begin_src elisp
+;; Add as8051 folder to Emacs load path
+(Add-to-list 'load-path (concat user-emacs-directory "as8051-mode/" ))
+;; load module
+(require 'as8051-mode)
+;; associate as8051-mode with .asm files
+(add-to-list 'auto-mode-alist '("\\.asm\\'" . as8051-mode))
+#+end_src
+- Restart Emacs
+** Tested with
+- GNU Emacs 28.1 (build 1, x86_64-pc-linux-gnu, GTK+ Version 3.24.33, cairo version 1.16.0)
+- may work with other version
