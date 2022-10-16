@@ -107,7 +107,7 @@ This can be :tab, :space, or nil (do nothing)."
 
 (eval-and-compile
   (defconst as8051-registers
-    '("R1" "R2" "R3" "R4" "R5" "R6" "R7" "ACC" "A" "B" "DPH" "DPL" "DPTR" "IE" "IP" "P0" "P1" "P2" "P3" "PC" "PCON" "PSW" "RCAP2L" "RCAP2H" "SBUF" "SCON" "SP" "T2CON" "TCON" "TH0" "TH1" "TH2" "TL0" "TL1" "TL2" "TMOD" )
+    '("R0" "R1" "R2" "R3" "R4" "R5" "R6" "R7" "ACC" "A" "B" "DPH" "DPL" "DPTR" "IE" "IP" "P0" "P1" "P2" "P3" "PC" "PCON" "PSW" "RCAP2L" "RCAP2H" "SBUF" "SCON" "SP" "T2CON" "TCON" "TH0" "TH1" "TH2" "TL0" "TL1" "TL2" "TMOD" )
     "8051 registers for `as8051-mode'."))
 
 (eval-and-compile
@@ -148,7 +148,7 @@ This can be :tab, :space, or nil (do nothing)."
 
 (eval-and-compile
   (defconst as8051-types
-    '("m_assign_var" "m_assign_var_v" "m_assign_var_16b" "m_assign_var_16b_v" "m_else"  "m_if_var" "m__val_ge" "m__val_le" "m_inc_file"  "m_init_zero" "m_init_zero_w" "m_io_input" "m_io_output" "m_led_on" "m_led_off" "m_msg" "m_var" "m_var_bit" "m_var_w")
+    '("m_assign" "m_assign_v" "m_assignw" "m_assignw_v" "m_else"  "m_if" "m_if_eq" "m__eq" "m__ge"  "m__gt" "m__le" "m__lt" "m__zero" "m_ifw_eq" "m_ifw_ge" "m_ifw_gt" "m_ifw_le" "m_ifw_lt" "m_inc_file"  "m_zero" "m_zerobit" "m_zerow" "m_io_hi" "m_io_input" "m_io_lo" "m_io_output" "m_led_on" "m_led_off" "m_msg" "m_var" "m_varbit" "m_varw")
     "ASXXXX Macros from utils.asm `as8051-mode'."))
 
 (eval-and-compile
@@ -166,16 +166,20 @@ This can be :tab, :space, or nil (do nothing)."
     '(".else" ".endif" ".endm" ".if" ".ifdef" ".ifdif" ".ifeq" ".iff" ".ifge" ".ifidn" ".ifle" ".iflt" ".ifnb" ".ifndef" ".ift" ".iftf" ".irp" ".irpc" ".macro" ".mdelete" ".mexit" ".narg" ".nchr" ".ntyp" ".nval" ".rept")
     "ASXXXX preprocessor directives for `as8051-mode'."))
 
-(defconst as8051-nonlocal-label-rexexp
-  "\\(\\_<[a-zA-Z_?][a-zA-Z0-9_$#@~?]*\\_>\\)\\s-*:"
+(defconst as8051-reusable-label-regexp
+  "\\(\\_<[1-9?][0-9$]*\\_>\\)\\s-*:"
+  "Regexp for `as8051-mode' for matching reusable labels.")
+
+(defconst as8051-nonlocal-label-regexp
+  "\\(\\_<[a-zA-Z_?][a-zA-Z0-9_$#@~?']*\\_>\\)\\s-*:"
   "Regexp for `as8051-mode' for matching nonlocal labels.")
 
 (defconst as8051-local-label-regexp
-  "\\(\\_<\\.[a-zA-Z_?][a-zA-Z0-9_$#@~?]*\\_>\\)\\(?:\\s-*:\\)?"
+  "\\(\\_<\\.[a-zA-Z_?][a-zA-Z0-9_$#@~?']*\\_>\\)\\(?:\\s-*:\\)?"
   "Regexp for `as8051-mode' for matching local labels.")
 
 (defconst as8051-label-regexp
-  (concat as8051-nonlocal-label-rexexp "\\|" as8051-local-label-regexp)
+  (concat  as8051-reusable-label-regexp "\\|" as8051-nonlocal-label-regexp "\\|" as8051-local-label-regexp)
   "Regexp for `as8051-mode' for matching labels.")
 
 ;; (defconst as8051-constant-regexp
@@ -197,7 +201,7 @@ This can be :tab, :space, or nil (do nothing)."
      (regexp-opt ,keywords 'words)))
 
 (defconst as8051-imenu-generic-expression
-  `((nil ,(concat "^\\s-*" as8051-nonlocal-label-rexexp) 1)
+  `((nil ,(concat "^\\s-*" as8051-nonlocal-label-regexp) 1)
     (nil ,(concat (as8051--opt '("%define" "%macro"))
                   "\\s-+\\([a-zA-Z0-9_$#@~.?]+\\)") 2))
   "Expressions for `imenu-generic-expression'.")
@@ -218,8 +222,9 @@ This includes prefixes or modifiers (eg \"mov\", \"rep mov\", etc match)")
     (,(as8051--opt as8051-types) . 'as8051-types)
     (,(as8051--opt as8051-instructions) . 'as8051-instructions)
     (,(as8051--opt as8051-pp-directives) . 'as8051-preprocessor)
-    (,(concat "^\\s-*" as8051-nonlocal-label-rexexp) (1 'as8051-labels))
+    (,(concat "^\\s-*" as8051-nonlocal-label-regexp) (1 'as8051-labels))
     (,(concat "^\\s-*" as8051-local-label-regexp) (1 'as8051-local-labels))
+    (,(concat "^\\s-*" as8051-reusable-label-regexp) (1 'as8051-local-labels))
     (,as8051-constant-regexp . 'as8051-constant)
     (,(as8051--opt as8051-directives) . 'as8051-directives))
   "Keywords for `as8051-mode'.")
